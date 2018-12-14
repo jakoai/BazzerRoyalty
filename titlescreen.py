@@ -1,5 +1,4 @@
 import pygame, sys
-screen = pygame.display.set_mode([1280,720])
 
 def titlescreen(screen):
     screen.fill([255, 255, 255])
