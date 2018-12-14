@@ -1,7 +1,6 @@
 import pygame, sys
 
-def titlescreen():
-    screen = pygame.display.set_mode([800, 600])
+def titlescreen(screen):
     screen.fill([255, 255, 255])
     pygame.display.flip()
     pygame.font.init()
