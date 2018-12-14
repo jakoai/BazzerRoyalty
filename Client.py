@@ -9,16 +9,13 @@ class Client(threading.Thread):
         self.stop = False
         self.Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connected = False
+        self.newArrived = False
 
         try:
-            try:
-                self.Socket.connect((ip, port))
-                self.connected = True
-                print("Connected to server")
-            except ConnectionRefusedError:
-                print("Host not reachable")
-                self.stop = True
-        except socket.gaierror:
+            self.Socket.connect((ip, port))
+            self.connected = True
+            print("Connected to server")
+        except (socket.gaierror, ConnectionRefusedError):
             print("Host not reachable")
             self.stop = True
 
@@ -29,35 +26,25 @@ class Client(threading.Thread):
         while not self.stop:
             try:
                 try:
-                    try:
-                        try:
-                            try:
-                                msg = eval(self.Socket.recv(1024).decode()) #Receive data from the server
-                                self.received = msg
-                            except  TypeError:
-                                pass
-                        except SyntaxError:
-                            pass
-                    except socket.timeout:
-                        pass
-                except ConnectionAbortedError:
-                    self.quit()
-            except OSError:
+                    msg = eval(self.Socket.recv(1024).decode()) #Receive data from the server
+                    self.received = msg
+                    self.newArrived = True
+                except (socket.timeout, SyntaxError, TypeError):
+                    pass
+            except (OSError, ConnectionAbortedError):
                 self.quit()
         self.quit()
 
     def receive(self):
+        self.newArrived = False
         return self.received
 
     def send(self, data):
         if data == "":
             return
         try:
-            try:
-                self.Socket.send(str(data).encode())
-            except ConnectionResetError:
-                self.quit()
-        except OSError:
+            self.Socket.send(str(data).encode())
+        except (OSError, ConnectionResetError):
             self.quit()
 
     def quit(self):

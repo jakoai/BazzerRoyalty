@@ -1,43 +1,32 @@
 import threading, socket
 
 class Clients(threading.Thread):
-    def __init__ (self, conn, addr):
+    def __init__ (self, conn, addr, id_):
         threading.Thread.__init__(self)
+        self.id = id_ 
         self.conn = conn
         self.addr = addr
         self.received = {}
         self.stop = False
+        self.newArrived = False
 
     def run(self):
         print("Client on ip:%s addr:%s connected" % self.addr)
         self.conn.settimeout(0.001)
         while not self.stop:
-            try:
-                try:
-                    try:
-                        try:
-                            try:
-                                try:
-                                    msg = eval(self.conn.recv(1024).decode()) #Receive data from client
-                                    for i in msg.keys():
-                                        self.received[i] = msg[i]
-                                except TypeError:
-                                    pass
-                            except SyntaxError:
-                                pass
-                        except socket.timeout:
-                            pass
-                    except ConnectionResetError:
-                        pass
-                except ConnectionAbortedError:
-                    pass
-            except OSError:
+            try :
+                msg = eval(self.conn.recv(1024).decode()) #Receive data from client
+                for i in msg.keys():
+                    self.received[i] = msg[i]
+                self.newArrived = True
+            except (OSError, ConnectionAbortedError, ConnectionResetError, socket.timeout, SyntaxError, TypeError):
                 pass
 
         self.conn.close()
         print("Client on ip:%s addr:%s disconnected" % self.addr)
 
     def receive(self):
+        self.newArrived = False
         return self.received
 
     def send(self, data):
@@ -65,14 +54,16 @@ class Server(threading.Thread):
         self.stop = False
 
     def run(self):
+        give_id = 1
         while not self.stop:
             try:
                 conn, addr = self.Socket.accept() #Receive connection
                 self.refresh_clients()
-                self.clients.append(Clients(conn, addr)) #Add new connection
+                self.clients.append(Clients(conn, addr, give_id)) #Add new connection
                 self.clients[len(self.clients)-1].start()
+                give_id += 1
             except OSError:
-                self.stop = True
+                self.quit()
         self.quit()
 
     def refresh_clients(self):
