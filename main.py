@@ -1,4 +1,4 @@
-import pygame, Server, Client, sys, Map, time
+import pygame, Server, Client, sys, Map, time, Character
 
 STOPALL = False
 
@@ -24,6 +24,8 @@ m = Map.map(100, 50)
 m.generatemap()
 ti = time.time()
 map_ = []
+other_players = {}
+player = Character.player(100, 100, 10)
 
 while not STOPALL:
 	if not (isServer or isClient):
@@ -39,40 +41,44 @@ while not STOPALL:
 			isServer = False
 			client.send({'msg':"map"})
 	else:
+		player.movement()
 		if isServer:
 			server.refresh_clients()
+			other_players = {}
 			for client in server.clients:
 				if client.newArrived:
-					client_msg = client.receive()
-					if client_msg['msg'] == "others":
-						send = {"others":{0:(50, 69)}}
+					print(client.receive())
+					if client.receive()['msg'] == "others":
+						send = {"others":{0:(player.x, player.y)}}
 						for other_clients in server.clients:
 							if client.id != other_clients.id:
 								send["others"][client.id] = other_clients.receive()["pos"]
 						client.send(send)
-					elif client_msg['msg'] == "map":
-						print(len(str(m.map).encode()))
+					elif client.receive()['msg'] == "map":
 						client.send({"map":m.map})
-					print(client.id, client.receive())
+
+				other_players[client.id] = client.receive()["pos"]
 
 		elif isClient:
 			if client.connected:
 				if client.newArrived:
 					print(client.receive())
-				if time.time()-ti > 1:
-					if client.receive()["msg"]:
+					for i in client.receive().keys():
 						if i == "map":
-							print("kys")
-							map_ = client.receive()[i]
-					ti = time.time()
+							map_ = client.receive()['map']
+						if i == "others":
+							other_players = client.receive()['others']
+					client.send({'msg':"others", 'pos':(player.x, player.y)})
 			else:
-				STOPALL = True
+				 STOPALL = True
 
 
 
 	pygame_event()
 	screen.fill((255, 0, 255))
-	m.draw(screen, 10, 0, 0)
+	m.draw(screen, 10, player.x, player.y)
+	player.draw_others(screen, other_players)
+	player.draw(screen)
 	pygame.display.update()
 
 if isServer:
