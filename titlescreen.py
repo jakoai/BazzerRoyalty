@@ -1,5 +1,5 @@
 import pygame, sys
-screen = pygame.display.set_mode([1280,720])
+#screen = pygame.display.set_mode([1280,720])
 
 def titlescreen(screen):
     screen.fill([255, 255, 255])
@@ -40,4 +40,4 @@ def titlescreen(screen):
         if mousepress == (1, 1, 1):
             screen.blit(sekrit, (770,580))
         pygame.display.flip()
-titlescreen(screen)
+#titlescreen(screen)
