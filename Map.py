@@ -30,9 +30,9 @@ class map():
                                         if z <= 3:
                                             self.map[ny+cy][nx+cx] = 1
 
-            print(item)
-    def draw(self, screen, color, tile):
-        pygame.draw.rect(screen, color, (0, 0, tile, tile))
 
-m = map(30,20)
-m.generatemap()
+    def draw(self, screen, color, tile):
+        for ny,item in enumerate(self.map):
+            for nx,i in enumerate(item):
+                if i == 1:
+                    pygame.draw.rect(screen, color, (nx*tile,ny*tile , tile, tile))
