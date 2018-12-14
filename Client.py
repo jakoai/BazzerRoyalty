@@ -26,7 +26,7 @@ class Client(threading.Thread):
         while not self.stop:
             try:
                 try:
-                    msg = eval(self.Socket.recv(1024).decode()) #Receive data from the server
+                    msg = eval(self.Socket.recv(65536).decode()) #Receive data from the server
                     self.received = msg
                     self.newArrived = True
                 except (socket.timeout, SyntaxError, TypeError):

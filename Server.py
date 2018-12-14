@@ -6,7 +6,7 @@ class Clients(threading.Thread):
         self.id = id_ 
         self.conn = conn
         self.addr = addr
-        self.received = {}
+        self.received = {"pos":(0, 0), "msg":""}
         self.stop = False
         self.newArrived = False
 
