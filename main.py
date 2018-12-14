@@ -21,7 +21,6 @@ isClient = False
 ip_address = "localhost"
 runserver = int(input("1, kui server: "))
 m = Map.map(100, 50)
-m.generatemap()
 ti = time.time()
 map_ = []
 other_players = {}
@@ -34,6 +33,7 @@ while not STOPALL:
 			server.start()
 			isClient = False
 			isServer = True
+			m.generatemap()
 		else:
 			client = Client.Client(ip_address, 7777)
 			client.start()
@@ -66,6 +66,7 @@ while not STOPALL:
 					for i in client.receive().keys():
 						if i == "map":
 							map_ = client.receive()['map']
+							m.map = map_
 						if i == "others":
 							other_players = client.receive()['others']
 					client.send({'msg':"others", 'pos':(player.x, player.y)})

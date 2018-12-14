@@ -19,9 +19,9 @@ class player:
             self.x -= 1
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (100, 0, 0), (int(screen.get_width()/2-self.size/2), int(screen.get_height()/2-self.size/2), self.size, self.size))
+        pygame.draw.rect(screen, (255, 0, 0), (int(screen.get_width()/2-self.size/2), int(screen.get_height()/2-self.size/2), self.size, self.size))
 
     def draw_others(self, screen, others):
         print(others)
         for i in others.keys():
-            pygame.draw.rect(screen, (100, 100, 200), (int(others[i][0]-self.x-self.size/2), int(others[i][1]-self.y-self.size/2), self.size, self.size))
+            pygame.draw.rect(screen, (0, 255, 0), (int(others[i][0]+screen.get_width()/2-self.x-self.size/2), int(others[i][1]+screen.get_height()/2-self.y-self.size/2), self.size, self.size))
