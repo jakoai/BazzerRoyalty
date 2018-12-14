@@ -31,7 +31,7 @@ class map():
                                             self.map[ny+cy][nx+cx] = 1
 
             print(item)
-    def draw(screen, color, tile):
+    def draw(self, screen, color, tile):
         pygame.draw.rect(screen, color, (0, 0, tile, tile))
 
 m = map(30,20)
