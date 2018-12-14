@@ -1,2 +1,3 @@
 player (local, client)
 map
+main screen - server nupp, connect nupp, ip input, name input, ilus
