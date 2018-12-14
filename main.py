@@ -20,7 +20,7 @@ isServer = False
 isClient = False
 ip_address = "localhost"
 runserver = int(input("1, kui server: "))
-m = Map.map(10, 5)
+m = Map.map(100, 50)
 m.generatemap()
 ti = time.time()
 map_ = []
