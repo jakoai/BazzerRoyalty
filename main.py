@@ -20,13 +20,14 @@ isServer = False
 isClient = False
 ip_address = "localhost"
 runserver = int(input("1, kui server: "))
-m = Map.map(300, 300)
+m = Map.map(250, 250)
 ti = time.time()
 map_ = []
 other_players = {}
-player = Character.player(100, 100, 10)
-
+player = Character.player(100, 100, 25)
+delta = 0
 while not STOPALL:
+	ti = time.time()
 	if not (isServer or isClient):
 		if runserver == 1:
 			server = Server.Server(7777)
@@ -41,7 +42,7 @@ while not STOPALL:
 			isServer = False
 			client.send({'msg':"map"})
 	else:
-		player.movement()
+		player.movement(delta)
 		if isServer:
 			server.refresh_clients()
 			other_players = {}
@@ -76,10 +77,13 @@ while not STOPALL:
 
 	pygame_event()
 	screen.fill((255, 0, 255))
-	m.draw(screen, 10, player.x, player.y)
+	m.draw(screen, 25, player.x, player.y)
 	player.draw_others(screen, other_players)
 	player.draw(screen)
 	pygame.display.update()
+	delta = time.time()-ti
+	print(int(1/delta))
+
 
 if isServer:
 	server.quit()
