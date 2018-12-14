@@ -1,22 +1,27 @@
-from pygame import *
+import pygame
 
 
 class player:
-    def __init__(self):
-        self.charx = 100
-        self.chary = 100
+    def __init__(self, x, y, size):
+        self.x = x
+        self.y = y
+        self.size = size
 
-    def movement(self,):
+    def movement(self):
         keys = pygame.key.get_pressed()
-        if event.type == pygame.KEYDOWN:
-            if keys[K_UP]:
-                self.chary -=10
-            if keys[K_RIGHT]:
-                self.charx +=10
-            if keys[K_DOWN]:
-                self.chary += 10
-            if keys[K_LEFT]:
-                self.charx -= 10
+        if keys[pygame.K_UP]:
+            self.y -=1
+        if keys[pygame.K_RIGHT]:
+            self.x +=1
+        if keys[pygame.K_DOWN]:
+            self.y += 1
+        if keys[pygame.K_LEFT]:
+            self.x -= 1
 
-    def playerdraw(self, screen):
-        draw.rect(screen, (100, 0, 0), (self.charx, self.chary, 50, 50))
+    def draw(self, screen):
+        pygame.draw.rect(screen, (100, 0, 0), (int(screen.get_width()/2-self.size/2), int(screen.get_height()/2-self.size/2), self.size, self.size))
+
+    def draw_others(self, screen, others):
+        print(others)
+        for i in others.keys():
+            pygame.draw.rect(screen, (100, 100, 200), (int(others[i][0]-self.x-self.size/2), int(others[i][1]-self.y-self.size/2), self.size, self.size))
