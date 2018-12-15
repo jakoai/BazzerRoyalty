@@ -35,7 +35,7 @@ def run(screen):
         else:
             pygame.draw.rect(screen, (0, 255, 0), (50, 100, 200, 100))
             screen.blit(clienttext, (82, 110))
-        if mousepress == (1, 0, 0) and 500 > mousepos[0] > 300 and 300 > mousepos[1] > 100:
+        if mousepress == (1, 0, 0) and 500 > mousepos[0] > 300 and 200 > mousepos[1] > 100:
             pygame.draw.rect(screen, (0, 200, 0), (300, 100, 200, 100))
             screen.blit(hosttext, (342, 110)) #host
             runserver = 1
