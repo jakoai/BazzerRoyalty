@@ -20,7 +20,7 @@ titlescreen.run(screen)
 
 isServer = False
 isClient = False
-ip_address = "localhost"
+ip_address = "192.168.137.72"
 m = Map.map(100, 100, 25)
 ti = time.time()
 map_ = []

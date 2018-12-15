@@ -4,7 +4,7 @@ import pygame
 class shoot():
     def __init__(self):
         self.BulletImgRaw = pygame.Surface((30, 20), pygame.SRCALPHA)
-        pygame.draw.polygon(self.BulletImgRaw, (190, 150, 90), ((0, 0), (30, 10), (0, 20)))
+        pygame.draw.polygon(self.BulletImgRaw, (190, 150, 90), ((0, 0), (9, 3), (0, 6)))
         self.bullets = []
 
     def out_of_bounds(self, position):
@@ -23,7 +23,7 @@ class shoot():
             vel_y = math.sin(angle) * 3
             BulletImg = pygame.transform.rotate(self.BulletImgRaw, -math.degrees(angle))
             width, height = BulletImg.get_size()
-            self.bullets.append([[-width / 4+screen.get_width()/2, -height / 4+screen.get_height()/2], [vel_x, vel_y],BulletImg])
+            self.bullets.append([[-width/4+screen.get_width()/2, -height/4+screen.get_height()/2], [vel_x, vel_y],BulletImg])
         filtered_bullets = []
         for bullet in self.bullets:
             if not self.out_of_bounds(bullet[0]):
