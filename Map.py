@@ -1,10 +1,11 @@
-import random, pygame, pygame.gfxdraw
+import random, pygame, pygame.gfxdraw, Collision, math
 
 class map():
-    def __init__(self, mapx, mapy):
+    def __init__(self, mapx, mapy, size):
         self.map = []
         self.mapx = mapx
         self.mapy = mapy
+        self.size = size
 
 
         for i in range(mapy):
@@ -59,12 +60,28 @@ class map():
                 if x <=5:
                     self.map[ny][nx] = 2
 
-    def draw(self, screen, tile, charx, chary):
+    def draw(self, screen, charx, chary):
         for ny,item in enumerate(self.map):
             for nx,i in enumerate(item):
                 if i == 1:
-                    pygame.gfxdraw.box(screen, (nx*tile-charx,ny*tile-chary , tile, tile), (0,255,255))
+                    pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (0,255,255))
                 if i == 2:
-                    pygame.gfxdraw.box(screen, (nx*tile-charx,ny*tile-chary , tile, tile), (0,0,255))
+                    pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (0,0,255))
 
+    def check_collision(self, charx, chary, charsize):
+        posx = int((charx-charsize/2)/self.size)
+        posy = int((chary-charsize/2)/self.size)
+        try:
+            if Collision.rect_collision(charx-charsize/2, chary-charsize/2, charsize, charsize, posx*self.size, posy*self.size, self.size, self.size, "bool") and self.map[posy][posx] == 1:
+                return True
+        except IndexError:
+            pass
+        posx = int((charx+charsize/2)/self.size)
+        posy = int((chary+charsize/2)/self.size)
+        try:
+            if Collision.rect_collision(charx, chary, charsize, charsize, posx*self.size, posy*self.size, self.size, self.size, "bool") and self.map[posy][posx] == 1:
+                return True
+        except IndexError:
+            pass
+        return False
 
