@@ -25,7 +25,7 @@ m = Map.map(100, 100, 25)
 ti = time.time()
 map_ = []
 other_players = {}
-player = Character.player(100, 100, 20)
+player = Character.player(20)
 shooting = Shooting.shoot()
 delta = 0
 while not STOPALL:
@@ -37,6 +37,8 @@ while not STOPALL:
 			isClient = False
 			isServer = True
 			m.generatemap()
+			while m.check_collision(screen, player.x, player.y, player.size) != [0, 0]:
+				player.randpos()
 		else:
 			client = Client.Client(ip_address, 7777)
 			client.start()
@@ -81,6 +83,8 @@ while not STOPALL:
 						if i == "map":
 							map_ = client.receive()['map']
 							m.map = map_
+							while m.check_collision(screen, player.x, player.y, player.size) != [0, 0]:
+								player.randpos()
 						if i == "others":
 							other_players = client.receive()['others']
 					client.send({'msg':"others", 'pos':(player.x, player.y)})

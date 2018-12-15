@@ -1,12 +1,13 @@
-import pygame, pygame.gfxdraw
+import pygame, pygame.gfxdraw, random
 
 
 class player:
-    def __init__(self, x, y, size):
-        self.x = x
-        self.y = y
+    def __init__(self, size):
+        self.x = 0
+        self.y = 0
         self.size = size
 
+        self.randpos()
     def get_movement(self, d):
         dx = 0
         dy = 0
@@ -31,3 +32,7 @@ class player:
     def draw_others(self, screen, others):
         for i in others.keys():
             pygame.gfxdraw.box(screen, (int(others[i][0]+screen.get_width()/2-self.x-self.size/2), int(others[i][1]+screen.get_height()/2-self.y-self.size/2), self.size, self.size), (0, 255, 0))
+
+    def randpos(self):
+        self.x = random.randint(0, 2500)
+        self.y = random.randint(0, 2500)
