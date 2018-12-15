@@ -1,4 +1,4 @@
-import pygame, Server, Client, sys, Map, time, Character, math
+import pygame, Server, Client, sys, Map, time, Character, math, Shooting, titlescreen
 
 STOPALL = False
 
@@ -16,20 +16,22 @@ def pygame_event():
 		if event.type == pygame.VIDEORESIZE:
 			screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
 
+titlescreen.run(screen)
+
 isServer = False
 isClient = False
 ip_address = "localhost"
-runserver = int(input("1, kui server: "))
 m = Map.map(100, 100, 25)
 ti = time.time()
 map_ = []
 other_players = {}
 player = Character.player(100, 100, 20)
+shooting = Shooting.shoot()
 delta = 0
 while not STOPALL:
 	ti = time.time()
 	if not (isServer or isClient):
-		if runserver == 1:
+		if titlescreen.runserver:
 			server = Server.Server(7777)
 			server.start()
 			isClient = False
@@ -92,6 +94,7 @@ while not STOPALL:
 	m.draw(screen, player.x, player.y)
 	player.draw_others(screen, other_players)
 	player.draw(screen)
+	shooting.gen_bullets(screen, player.x, player.y)
 	pygame.display.update()
 	delta = time.time()-ti
 	#print(int(1/delta))
