@@ -71,10 +71,10 @@ class map():
     def check_collision(self, screen, charx, chary, charsize):
         for ny, i in enumerate(self.map):
             for nx, j in enumerate(i):
-                if j == 1:
+                if j == 1 or j == 2:
                     collided = Collision.rect_collision(int((nx)*self.size-charx+screen.get_width()/2), int((ny)*self.size-chary+screen.get_height()/2), self.size, self.size, int(screen.get_width()/2-charsize/2), int(screen.get_height()/2-charsize/2), charsize, charsize, "pos")
                     if collided[0] != 0 and collided[1] != 0:
-                        return collided
+                        return (collided, [j, nx, ny])
         '''
         posx = int((charx+charsize/2)/self.size)
         posy = int((chary+charsize/2)/self.size)
@@ -97,5 +97,5 @@ class map():
                 return Collision.rect_collision(charx, chary-charsize/2, charsize, charsize, posx*self.size, posy*self.size, self.size, self.size, "pos")
         except IndexError:
             pass'''
-        return [0, 0]
+        return ([0, 0], [-1, 0, 0])
 

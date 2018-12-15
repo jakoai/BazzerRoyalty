@@ -37,7 +37,7 @@ while not STOPALL:
 			isClient = False
 			isServer = True
 			m.generatemap()
-			while m.check_collision(screen, player.x, player.y, player.size) != [0, 0]:
+			while m.check_collision(screen, player.x, player.y, player.size)[0] != [0, 0]:
 				player.randpos()
 		else:
 			client = Client.Client(ip_address, 7777)
@@ -48,15 +48,23 @@ while not STOPALL:
 	else:
 		dx, dy = player.get_movement(delta)
 		col_pos = [0, 0]
-		col_pos[0] = m.check_collision(screen, player.x+dx, player.y, player.size)[0]
-		col_pos[1] = m.check_collision(screen, player.x, player.y+dy, player.size)[1]
-		if col_pos[0] != 0 and col_pos[1] != 0:
-			dx = dx*math.sin(math.pi * 45 / 180)
-			dy = dy*math.sin(math.pi * 45 / 180)
-		if col_pos[0] != 0:
-			dx = 0
-		if col_pos[1] != 0:
-			dy = 0
+		item = m.check_collision(screen, player.x+dx, player.y, player.size)
+		col_pos[0] = item[0][0]
+		item = m.check_collision(screen, player.x, player.y+dy, player.size)
+		col_pos[1] = item[0][1]
+
+		if col_pos[0] == 0 and col_pos[1] == 0:
+			dx = dx * math.sin(math.pi * 45 / 180)
+			dy = dy * math.sin(math.pi * 45 / 180)
+		print(item[1][0])
+		if item[1][0] == 2:
+			m.map[item[1][2]][item[1][1]] = 0
+			print("pede")
+		else:
+			if col_pos[0] != 0:
+				dx = 0
+			if col_pos[1] != 0:
+				dy = 0
 		player.set_movement(dx, dy)
 
 		if isServer:
@@ -83,7 +91,7 @@ while not STOPALL:
 						if i == "map":
 							map_ = client.receive()['map']
 							m.map = map_
-							while m.check_collision(screen, player.x, player.y, player.size) != [0, 0]:
+							while m.check_collision(screen, player.x, player.y, player.size)[0] != [0, 0]:
 								player.randpos()
 						if i == "others":
 							other_players = client.receive()['others']
