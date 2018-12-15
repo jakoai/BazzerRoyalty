@@ -65,23 +65,37 @@ class map():
             for nx,i in enumerate(item):
                 if i == 1:
                     pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (0,255,255))
-                if i == 2:
+                elif i == 2:
                     pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (0,0,255))
 
-    def check_collision(self, charx, chary, charsize):
-        posx = int((charx-charsize/2)/self.size)
-        posy = int((chary-charsize/2)/self.size)
-        try:
-            if Collision.rect_collision(charx-charsize/2, chary-charsize/2, charsize, charsize, posx*self.size, posy*self.size, self.size, self.size, "bool") and self.map[posy][posx] == 1:
-                return True
-        except IndexError:
-            pass
+    def check_collision(self, screen, charx, chary, charsize):
+        for ny, i in enumerate(self.map):
+            for nx, j in enumerate(i):
+                if j == 1:
+                    collided = Collision.rect_collision(int((nx)*self.size-charx+screen.get_width()/2), int((ny)*self.size-chary+screen.get_height()/2), self.size, self.size, int(screen.get_width()/2-charsize/2), int(screen.get_height()/2-charsize/2), charsize, charsize, "pos")
+                    if collided[0] != 0 and collided[1] != 0:
+                        return collided
+        '''
         posx = int((charx+charsize/2)/self.size)
         posy = int((chary+charsize/2)/self.size)
         try:
-            if Collision.rect_collision(charx, chary, charsize, charsize, posx*self.size, posy*self.size, self.size, self.size, "bool") and self.map[posy][posx] == 1:
-                return True
+            if self.map[posy][posx] == 1:
+                return Collision.rect_collision(charx, chary, charsize, charsize, posx*self.size, posy*self.size, self.size, self.size, "pos")
         except IndexError:
             pass
-        return False
+        posx = int((charx-charsize/2)/self.size)
+        posy = int((chary+charsize/2)/self.size)
+        try:
+            if self.map[posy][posx] == 1:
+                return Collision.rect_collision(charx-charsize/2, chary, charsize, charsize, posx*self.size, posy*self.size, self.size, self.size, "pos")
+        except IndexError:
+            pass
+        posx = int((charx+charsize/2)/self.size)
+        posy = int((chary-charsize/2)/self.size)
+        try:
+            if self.map[posy][posx] == 1:
+                return Collision.rect_collision(charx, chary-charsize/2, charsize, charsize, posx*self.size, posy*self.size, self.size, self.size, "pos")
+        except IndexError:
+            pass'''
+        return [0, 0]
 

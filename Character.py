@@ -7,16 +7,23 @@ class player:
         self.y = y
         self.size = size
 
-    def movement(self, d):
+    def get_movement(self, d):
+        dx = 0
+        dy = 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
-            self.y -= 250*d
+            dy -= 250*d
         if keys[pygame.K_RIGHT]:
-            self.x += 250*d
+            dx += 250*d
         if keys[pygame.K_DOWN]:
-            self.y += 250*d
+            dy += 250*d
         if keys[pygame.K_LEFT]:
-            self.x -= 250*d
+            dx -= 250*d
+        return dx, dy
+
+    def set_movement(self, dx, dy):
+        self.x += dx
+        self.y += dy
 
     def draw(self, screen):
         pygame.gfxdraw.box(screen, (int(screen.get_width()/2-self.size/2), int(screen.get_height()/2-self.size/2), self.size, self.size), (255, 0, 0))

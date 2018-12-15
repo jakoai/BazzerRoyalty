@@ -1,4 +1,4 @@
-import pygame, Server, Client, sys, Map, time, Character
+import pygame, Server, Client, sys, Map, time, Character, math
 
 STOPALL = False
 
@@ -20,11 +20,11 @@ isServer = False
 isClient = False
 ip_address = "localhost"
 runserver = int(input("1, kui server: "))
-m = Map.map(250, 250, 25)
+m = Map.map(100, 100, 25)
 ti = time.time()
 map_ = []
 other_players = {}
-player = Character.player(100, 100, 25)
+player = Character.player(100, 100, 20)
 delta = 0
 while not STOPALL:
 	ti = time.time()
@@ -42,7 +42,19 @@ while not STOPALL:
 			isServer = False
 			client.send({'msg':"map"})
 	else:
-		player.movement(delta)
+		dx, dy = player.get_movement(delta)
+		col_pos = [0, 0]
+		col_pos[0] = m.check_collision(screen, player.x+dx, player.y, player.size)[0]
+		col_pos[1] = m.check_collision(screen, player.x, player.y+dy, player.size)[1]
+		if col_pos[0] != 0 and col_pos[1] != 0:
+			dx = dx*math.sin(math.pi * 45 / 180)
+			dy = dy*math.sin(math.pi * 45 / 180)
+		if col_pos[0] != 0:
+			dx = 0
+		if col_pos[1] != 0:
+			dy = 0
+		player.set_movement(dx, dy)
+
 		if isServer:
 			server.refresh_clients()
 			other_players = {}
@@ -80,7 +92,6 @@ while not STOPALL:
 	m.draw(screen, player.x, player.y)
 	player.draw_others(screen, other_players)
 	player.draw(screen)
-	print(m.check_collision(player.x, player.y, player.size))
 	pygame.display.update()
 	delta = time.time()-ti
 	#print(int(1/delta))

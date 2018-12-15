@@ -1,7 +1,6 @@
 import math
 
 def rect_collision(x1, y1, a1, b1, x2, y2, a2, b2, dir_type):
-
     col_direction = [0, 0]
     if (((x2<=x1+a1 and x2>=x1) or (x2+a2>=x1 and x2+a2<=x1+a1) or (x1 > x2 and x1+a1 < x2+a2)) and ((y2<=y1+b1 and y2>=y1) or (y2+b2>=y1 and y2+b2<=y1+b1) or (y1 > y2 and y1+b1 < y2+b2))):
         if dir_type == "pos":
