@@ -20,7 +20,7 @@ titlescreen.run(screen)
 
 isServer = False
 isClient = False
-ip_address = "192.168.137.72"
+ip_address = "localhost"
 m = Map.map(100, 100, 25)
 ti = time.time()
 map_ = []
@@ -30,6 +30,7 @@ player = Character.player(20)
 delta = 0
 shooting = Shooting.shoot()
 item_spawn = 0
+send_time = 0
 while not STOPALL:
 	ti = time.time()
 	if not (isServer or isClient):
@@ -46,7 +47,7 @@ while not STOPALL:
 			client.start()
 			isClient = client.connected
 			isServer = False
-			client.send({'msg':"map"})
+			client.send({'msg': "firstmap"})
 	else:
 		dx, dy = player.get_movement(delta)
 		col_pos = [0, 0]
@@ -64,19 +65,18 @@ while not STOPALL:
 			if col_pos[1] != 0:
 				dy = 0
 
-		if item[1][0] == 2 or item2[1][0] == 2:
+		item = m.check_collision(screen, player.x, player.y, player.size)
+
+		if item[1][0] == 2:
 			m.map[item[1][2]][item[1][1]] = 0
-			m.map[item2[1][2]][item2[1][1]] = 0
 			player.ammo +=3
 
-		if item[1][0] == 3 or item2[1][0] == 3:
+		if item[1][0] == 3:
 			m.map[item[1][2]][item[1][1]] = 0
-			m.map[item2[1][2]][item2[1][1]] = 0
 			player.health += 10
 
-		if item[1][0] == 4 or item2[1][0] == 4:
+		if item[1][0] == 4:
 			m.map[item[1][2]][item[1][1]] = 0
-			m.map[item2[1][2]][item2[1][1]] = 0
 
 
 		#else:
@@ -91,15 +91,21 @@ while not STOPALL:
 			other_players = {}
 			for client in server.clients:
 				if client.newArrived:
-					if client.receive()['msg'] == "others":
+					if "others" == client.receive()['msg']:
 						send = {"others":{0:(player.x, player.y)}}
 						for other_clients in server.clients:
 							if client.id != other_clients.id:
 								send["others"][client.id] = other_clients.receive()["pos"]
 						client.send(send)
-					elif client.receive()['msg'] == "map":
-						print(len(str(m.map).encode()))
+					elif "map" == client.receive()['msg']:
 						client.send({"map":m.map})
+					elif "firstmap" == client.receive()['msg']:
+						client.send({"firstmap":m.map})
+					elif "bullets" == client.receive()['msg']:
+						client.send({"bullets":shooting.bullets})
+					elif "delItem" == client.receive()['msg']:
+						print("pede")
+						m.map[client.receive()['item'][1]][client.receive()['item'][1]] = 0
 
 				other_players[client.id] = client.receive()["pos"]
 			if time.time()-item_spawn > 10:
@@ -107,20 +113,32 @@ while not STOPALL:
 				item_spawn = time.time()
 
 		elif isClient:
+			print(client)
 			if client.connected:
 				if client.newArrived:
 					for i in client.receive().keys():
-						if i == "map":
-							map_ = client.receive()['map']
-							m.map = map_
+						if i == "firstmap":
+							m.map = client.receive()['firstmap']
 							while m.check_collision(screen, player.x, player.y, player.size)[0] != [0, 0]:
 								player.randpos()
-						if i == "others":
+						elif i == "map":
+							m.map = client.receive()['map']
+						elif i == "others":
 							other_players = client.receive()['others']
+						elif i == "bullets":
+							shooting.bullets = client.receive()['bullets'] #[[plrx,plry], [vel_x, vel_y]]
+				if time.time()-send_time > 0.4:
+					client.send({'msg':"bullets"})
+					send_time = time.time()
+				elif time.time()-send_time > 0.3:
+					client.send({'msg': "map"})
+				elif time.time()-send_time > 0.2:
 					client.send({'msg':"others", 'pos':(player.x, player.y)})
+				elif time.time()-send_time > 0.1:
+					if item[1][0] == 2 or item[1][0] == 3 or item[1][0] == 4:
+						client.send({'msg': "delItem", "item": [item[1][1], item[1][2]]})
 			else:
-				 STOPALL = True
-
+				STOPALL = True
 
 	pygame_event()
 	screen.fill((255, 0, 255))

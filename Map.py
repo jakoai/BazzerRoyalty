@@ -7,14 +7,13 @@ class map():
         self.mapy = mapy
         self.size = size
 
-
-        for i in range(mapy):
+    def generatemap(self):
+        for i in range(self.mapy):
             map_ = []
-            for j in range(mapx):
+            for j in range(self.mapx):
                 map_.append(0)
             self.map.append(map_)
 
-    def generatemap(self):
         for ny,item in enumerate(self.map):
             for nx,i in enumerate(item):
                 x = random.randint(0,1000)

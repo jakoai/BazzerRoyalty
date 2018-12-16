@@ -21,6 +21,7 @@ class shoot():
             vel_y = math.sin(angle) * 15
             self.bullets.append([[plrx,plry], [vel_x, vel_y]])
         return ammo
+
     def draw_bullets(self, screen, plrx, plry):
         filtered_bullets = []
         for bullet in self.bullets:

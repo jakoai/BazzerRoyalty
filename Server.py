@@ -15,7 +15,7 @@ class Clients(threading.Thread):
         self.conn.settimeout(0.001)
         while not self.stop:
             try :
-                msg = eval(self.conn.recv(1024).decode()) #Receive data from client
+                msg = eval(self.conn.recv(524288).decode()) #Receive data from client
                 for i in msg.keys():
                     self.received[i] = msg[i]
                 self.newArrived = True
