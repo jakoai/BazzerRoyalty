@@ -55,6 +55,9 @@ class map():
 
                     elif self.map[ny][nx] == 0 and wall > empty:
                         self.map[ny][nx] = 1
+    def generateitems(self):
+        for ny,item in enumerate(self.map):
+            for nx,i in enumerate(item):
                 if self.map[ny][nx] != 1:
                     x = random.randint(0,1000)
                     if x ==2:

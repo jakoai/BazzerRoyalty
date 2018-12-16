@@ -6,6 +6,8 @@ class player:
         self.x = 0
         self.y = 0
         self.size = size
+        self.ammo = 0
+        self.health = 100
 
         self.randpos()
     def get_movement(self, d):

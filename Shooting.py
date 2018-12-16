@@ -12,7 +12,7 @@ class shoot():
 
     def gen_bullets(self, screen, plrx, plry, ammo):
         if pygame.mouse.get_pressed()[0]:
-            ammo -=1
+            ammo -= 1
             mouse_position = pygame.mouse.get_pos()
             rise = mouse_position[1] - screen.get_height()/2
             run = mouse_position[0] - screen.get_width()/2

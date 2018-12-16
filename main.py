@@ -28,8 +28,8 @@ other_players = {}
 player = Character.player(20)
 
 delta = 0
-ammo = 0
 shooting = Shooting.shoot()
+item_spawn = 0
 while not STOPALL:
 	ti = time.time()
 	if not (isServer or isClient):
@@ -58,21 +58,27 @@ while not STOPALL:
 			dx = dx * math.sin(math.pi * 45 / 180)
 			dy = dy * math.sin(math.pi * 45 / 180)
 
-		if item[1][0] == 2 or item2[1][0] == 2:
-			m.map[item[1][2]][item[1][1]] = 0
-			ammo +=10
-
-		if item[1][0] == 3 or item2[1][0] == 3:
-			m.map[item[1][2]][item[1][1]] = 0
-
-		if item[1][0] == 4 or item2[1][0] == 4:
-			m.map[item[1][2]][item[1][1]] = 0
-
 		if item[1][0] == 1 or item2[1][0] == 1:
 			if col_pos[0] != 0:
 				dx = 0
 			if col_pos[1] != 0:
 				dy = 0
+
+		if item[1][0] == 2 or item2[1][0] == 2:
+			m.map[item[1][2]][item[1][1]] = 0
+			m.map[item2[1][2]][item2[1][1]] = 0
+			player.ammo +=3
+
+		if item[1][0] == 3 or item2[1][0] == 3:
+			m.map[item[1][2]][item[1][1]] = 0
+			m.map[item2[1][2]][item2[1][1]] = 0
+			player.health += 10
+
+		if item[1][0] == 4 or item2[1][0] == 4:
+			m.map[item[1][2]][item[1][1]] = 0
+			m.map[item2[1][2]][item2[1][1]] = 0
+
+
 		#else:
 		#	if col_pos[0] != 0:
 		#		dx = 0
@@ -96,6 +102,9 @@ while not STOPALL:
 						client.send({"map":m.map})
 
 				other_players[client.id] = client.receive()["pos"]
+			if time.time()-item_spawn > 10:
+				m.generateitems()
+				item_spawn = time.time()
 
 		elif isClient:
 			if client.connected:
@@ -113,15 +122,13 @@ while not STOPALL:
 				 STOPALL = True
 
 
-
 	pygame_event()
 	screen.fill((255, 0, 255))
 	m.draw(screen, player.x, player.y)
 	player.draw_others(screen, other_players)
 	player.draw(screen)
-	if 0 < ammo:
-		shooting.gen_bullets(screen, player.x, player.y, ammo)
-		ammo = shooting.gen_bullets(screen, player.x, player.y, ammo)
+	if 0 < player.ammo:
+		player.ammo = shooting.gen_bullets(screen, player.x, player.y, player.ammo)
 	shooting.draw_bullets(screen, player.x, player.y)
 	pygame.display.update()
 	delta = time.time()-ti
