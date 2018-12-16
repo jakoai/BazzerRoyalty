@@ -10,9 +10,9 @@ class shoot():
         return False
 
 
-    def gen_bullets(self, screen, plrx, plry):
-        angle = 0
+    def gen_bullets(self, screen, plrx, plry, ammo):
         if pygame.mouse.get_pressed()[0]:
+            ammo -=1
             mouse_position = pygame.mouse.get_pos()
             rise = mouse_position[1] - screen.get_height()/2
             run = mouse_position[0] - screen.get_width()/2
@@ -20,6 +20,8 @@ class shoot():
             vel_x = math.cos(angle) * 15
             vel_y = math.sin(angle) * 15
             self.bullets.append([[plrx,plry], [vel_x, vel_y]])
+        return ammo
+    def draw_bullets(self, screen, plrx, plry):
         filtered_bullets = []
         for bullet in self.bullets:
             if not self.out_of_bounds(bullet[0]):

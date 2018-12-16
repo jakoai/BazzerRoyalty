@@ -55,10 +55,14 @@ class map():
 
                     elif self.map[ny][nx] == 0 and wall > empty:
                         self.map[ny][nx] = 1
-
-                x = random.randint(0,1000)
-                if x <=5:
-                    self.map[ny][nx] = 2
+                if self.map[ny][nx] != 1:
+                    x = random.randint(0,1000)
+                    if x ==2:
+                        self.map[ny][nx] = 2
+                    if x ==3:
+                        self.map[ny][nx] = 3
+                    if x ==4:
+                        self.map[ny][nx] = 4
 
     def draw(self, screen, charx, chary):
         for ny,item in enumerate(self.map):
@@ -66,12 +70,16 @@ class map():
                 if i == 1:
                     pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (0,255,255))
                 elif i == 2:
-                    pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (0,0,255))
+                    pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (200,0,255))
+                elif i == 3:
+                    pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (0,120,120))
+                elif i == 4:
+                    pygame.gfxdraw.box(screen, (nx*self.size-charx+screen.get_width()/2,ny*self.size-chary+screen.get_height()/2, self.size, self.size), (100,100,255))
 
     def check_collision(self, screen, charx, chary, charsize):
         for ny, i in enumerate(self.map):
             for nx, j in enumerate(i):
-                if j == 1 or j == 2:
+                if j == 1 or j == 2 or j == 3 or j ==4:
                     collided = Collision.rect_collision(int((nx)*self.size-charx+screen.get_width()/2), int((ny)*self.size-chary+screen.get_height()/2), self.size, self.size, int(screen.get_width()/2-charsize/2), int(screen.get_height()/2-charsize/2), charsize, charsize, "pos")
                     if collided[0] != 0 and collided[1] != 0:
                         return (collided, [j, nx, ny])

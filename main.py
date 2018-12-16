@@ -26,8 +26,10 @@ ti = time.time()
 map_ = []
 other_players = {}
 player = Character.player(20)
-shooting = Shooting.shoot()
+
 delta = 0
+ammo = 0
+shooting = Shooting.shoot()
 while not STOPALL:
 	ti = time.time()
 	if not (isServer or isClient):
@@ -55,14 +57,27 @@ while not STOPALL:
 		if col_pos[0] == 0 and col_pos[1] == 0:
 			dx = dx * math.sin(math.pi * 45 / 180)
 			dy = dy * math.sin(math.pi * 45 / 180)
+
 		if item[1][0] == 2 or item2[1][0] == 2:
 			m.map[item[1][2]][item[1][1]] = 0
-			#########
-		else:
+			ammo +=10
+
+		if item[1][0] == 3 or item2[1][0] == 3:
+			m.map[item[1][2]][item[1][1]] = 0
+
+		if item[1][0] == 4 or item2[1][0] == 4:
+			m.map[item[1][2]][item[1][1]] = 0
+
+		if item[1][0] == 1 or item2[1][0] == 1:
 			if col_pos[0] != 0:
 				dx = 0
 			if col_pos[1] != 0:
 				dy = 0
+		#else:
+		#	if col_pos[0] != 0:
+		#		dx = 0
+		#	if col_pos[1] != 0:
+		#		dy = 0
 		player.set_movement(dx, dy)
 
 		if isServer:
@@ -104,7 +119,10 @@ while not STOPALL:
 	m.draw(screen, player.x, player.y)
 	player.draw_others(screen, other_players)
 	player.draw(screen)
-	shooting.gen_bullets(screen, player.x, player.y)
+	if 0 < ammo:
+		shooting.gen_bullets(screen, player.x, player.y, ammo)
+		ammo = shooting.gen_bullets(screen, player.x, player.y, ammo)
+	shooting.draw_bullets(screen, player.x, player.y)
 	pygame.display.update()
 	delta = time.time()-ti
 	#print(int(1/delta))
